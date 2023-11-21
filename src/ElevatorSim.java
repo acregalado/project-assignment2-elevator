@@ -153,6 +153,9 @@ public class ElevatorSim {
 
             // Set the conveyance time when the passenger is dropped off
             passenger.setConveyanceTime(tick);
+
+            // Update the elevator's current floor after simulating its movement
+            elevator.moveToFloor(destinationFloor);
         }
     }
 }
