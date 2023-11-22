@@ -1,13 +1,13 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Properties;
 import java.io.File;
 
 public class ElevatorSim {
-    private static List<Passengers> allPassengers;
+    private static Queue<Passengers> passengerQueue;
     private String structures;
     private float passengers;
     private int elevators;
@@ -31,7 +31,7 @@ public class ElevatorSim {
         // After the simulation, collect wait durations and perform analysis
         Analysis analysis = new Analysis();
 
-        for (Passengers passenger : allPassengers) {
+        for (Passengers passenger : passengerQueue) {
             if (passenger.getConveyanceTime() != -1) {
                 int waitDuration = passenger.getConveyanceTime() - passenger.getArrivalTime();
                 analysis.addWaitDuration(waitDuration);
@@ -61,7 +61,7 @@ public class ElevatorSim {
         if (args.length > 0) {
             try (FileReader userInput = new FileReader(args[0]);
                  BufferedReader reader = new BufferedReader(userInput)) {
-                // Load user-provided properties, overriding defaults
+                // Load user-provided properties and override defaults
                 properties.load(reader);
             } catch (IOException e) {
                 System.err.println("Error reading properties from file: " + args[0]);
@@ -82,7 +82,7 @@ public class ElevatorSim {
 
     private void configureSimulation(Properties properties) {
         // Use properties to configure the simulation
-        allPassengers = new ArrayList<>();
+        passengerQueue = new LinkedList<>();
 
         // Example: Assuming you have a Floors and Elevator class
         Floors totalFloors = new Floors(Integer.parseInt(properties.getProperty("floors")));
@@ -101,11 +101,11 @@ public class ElevatorSim {
         for (int tick = 0; tick < duration; tick++) {
             System.out.println("Tick: " + tick + ", Elevator Current Floor: " + elevator.getCurrentFloor());
 
-            // Generate passengers and add them to the floor queues
+            // Generate passengers and add them to the passenger queue
             for (int floor = 1; floor <= totalFloors; floor++) {
                 if (Passengers.shouldAppear(probabilityOfAppearance)) {
                     Passengers passenger = Passengers.generateRandomPassenger(elevator.getCurrentFloor(), totalFloors, tick);
-                    allPassengers.add(passenger);
+                    passengerQueue.add(passenger); // Add passenger to the queue
                     this.floors.addPassenger(passenger.getStartFloor(), passenger); // Add passenger to the floor queue
                 }
             }
@@ -114,25 +114,18 @@ public class ElevatorSim {
             elevator.move(totalFloors);
 
             // Additional simulation logic
-            for (Passengers passenger : allPassengers) {
+            for (Passengers passenger : passengerQueue) {
                 if (passenger.getConveyanceTime() == -1) {
                     simulateElevatorMovementAndConveyance(elevator, this.floors, passenger, tick);
                 }
             }
 
             // Debugging: Print passenger details after each tick
-            for (Passengers passenger : allPassengers) {
+            for (Passengers passenger : passengerQueue) {
                 System.out.println("Tick: " + tick + ", Passenger: " + passenger.getStartFloor() + " -> " + passenger.getDestinationFloor() +
-                        ", Arrival Time: " + passenger.getArrivalTime() + ", Conveyance Time: " + passenger.getConveyanceTime());
+                        ", Arrival Time: " + passenger.getArrivalTime());
             }
         }
-
-        // Debugging: Print all passengers at the end of the simulation
-        /*System.out.println("All Passengers:");
-        for (Passengers passenger : allPassengers) {
-            System.out.println("Passenger: " + passenger.getStartFloor() + " -> " + passenger.getDestinationFloor() +
-                    ", Arrival Time: " + passenger.getArrivalTime() + ", Conveyance Time: " + passenger.getConveyanceTime());
-        }*/
     }
 
     private void simulateElevatorMovementAndConveyance(Elevator elevator, Floors floors, Passengers passenger, int tick) {
