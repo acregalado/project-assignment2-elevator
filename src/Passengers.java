@@ -30,8 +30,14 @@ public class Passengers implements Comparable<Passengers> {
         return conveyanceTime;
     }
 
+    public int getWaitingTime() {
+        // Calculate and return the waiting time of the passenger
+        return conveyanceTime - arrivalTime;
+    }
+
     public static Passengers generateRandomPassenger(int currentFloor, int totalFloors, int tick) {
-        int startFloor = currentFloor;  // Set the start floor to the current floor of the elevator
+        // Set the start floor to the current floor of the elevator
+        int startFloor = currentFloor;
 
         int destinationFloor;
         do {
@@ -42,6 +48,7 @@ public class Passengers implements Comparable<Passengers> {
     }
 
     public static boolean shouldAppear(double probabilityOfAppearance) {
+        // Determine if passengers appear on floor based on probability
         return RANDOM.nextDouble() < probabilityOfAppearance;
     }
 
@@ -56,6 +63,6 @@ public class Passengers implements Comparable<Passengers> {
     @Override
     public int compareTo(Passengers otherPassenger) {
         // Compare passengers based on their waiting times
-        return Integer.compare(this.arrivalTime, otherPassenger.arrivalTime);
+        return Integer.compare(this.getWaitingTime(), otherPassenger.getWaitingTime());
     }
 }

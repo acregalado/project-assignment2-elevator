@@ -53,9 +53,15 @@ public class Elevator {
         passengersQueue.offer(passenger);
     }
 
-    public void unloadPassengers(int floor) {
+    public void unloadPassengers(int floor, Floors floors) {
         // Unload passengers whose destination is the specified floor
-        passengersQueue.removeIf(passenger -> passenger.getDestinationFloor() == floor);
+        passengersQueue.removeIf(passenger -> {
+            boolean shouldRemove = passenger.getDestinationFloor() == floor;
+            if (shouldRemove) {
+                floors.addPassenger(floor, passenger); // Update the floor queue
+            }
+            return shouldRemove;
+        });
     }
 
     public void move(int totalFloors) {
