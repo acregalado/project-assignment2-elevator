@@ -32,7 +32,7 @@ public class Floors {
     }
 
     public void unloadPassengers(int floor, Elevator elevator) {
-        elevator.unloadPassengers(floor);
+        elevator.unloadPassengers(floor, this);
     }
 
     public Queue<Passengers> getPassengerQueue(int floor) {
