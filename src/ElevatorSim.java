@@ -128,11 +128,11 @@ public class ElevatorSim {
         }
 
         // Debugging: Print all passengers at the end of the simulation
-        System.out.println("All Passengers:");
+        /*System.out.println("All Passengers:");
         for (Passengers passenger : allPassengers) {
             System.out.println("Passenger: " + passenger.getStartFloor() + " -> " + passenger.getDestinationFloor() +
                     ", Arrival Time: " + passenger.getArrivalTime() + ", Conveyance Time: " + passenger.getConveyanceTime());
-        }
+        }*/
     }
 
     private void simulateElevatorMovementAndConveyance(Elevator elevator, Floors floors, Passengers passenger, int tick) {
@@ -149,6 +149,9 @@ public class ElevatorSim {
 
             // Set the conveyance time when the passenger is dropped off
             passenger.setConveyanceTime(tick);
+        } else {
+            // Move the elevator to the destination floor
+            elevator.moveToFloor(destinationFloor);
         }
     }
 }

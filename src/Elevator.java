@@ -60,7 +60,7 @@ public class Elevator {
 
     public void move(int totalFloors) {
         // Simulate elevator movement and handle loading/unloading passengers
-        int floorsToMove = Math.min(5, totalFloors); // Limit movement to 5 floors
+        int floorsToMove = Math.min(1, totalFloors); // Limit movement to 5 floors
 
         int targetFloor;
         if (direction == DIRECTION_UP) {
