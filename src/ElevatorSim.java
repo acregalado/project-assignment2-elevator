@@ -93,8 +93,8 @@ public class ElevatorSim {
     }
 
     private void runSimulation() {
-        // Generating passengers for the simulation
-        int totalFloors = this.floors.getTotalFloors(); // Use getTotalFloors() method
+        // Initializing values
+        int totalFloors = this.floors.getTotalFloors();
         double probabilityOfAppearance = this.passengers;
         int duration = this.duration;
 
@@ -113,8 +113,7 @@ public class ElevatorSim {
             // Move the elevator and handle loading/unloading passengers
             elevator.move(totalFloors);
 
-            // Additional simulation logic, elevator movement, etc.
-            // For example, when the elevator picks up and drops off passengers, update conveyance time:
+            // Additional simulation logic
             for (Passengers passenger : allPassengers) {
                 if (passenger.getConveyanceTime() == -1) {
                     simulateElevatorMovementAndConveyance(elevator, this.floors, passenger, tick);
@@ -140,9 +139,6 @@ public class ElevatorSim {
         int currentFloor = elevator.getCurrentFloor();
         int destinationFloor = passenger.getDestinationFloor();
 
-        // Move the elevator toward the destination floor
-        elevator.moveToFloor(destinationFloor);
-
         // Check if the elevator is at the destination floor
         if (currentFloor == destinationFloor && passenger.getConveyanceTime() == -1) {
             // Unload passengers whose destination is the current floor
@@ -153,9 +149,6 @@ public class ElevatorSim {
 
             // Set the conveyance time when the passenger is dropped off
             passenger.setConveyanceTime(tick);
-
-            // Update the elevator's current floor after simulating its movement
-            elevator.moveToFloor(destinationFloor);
         }
     }
 }

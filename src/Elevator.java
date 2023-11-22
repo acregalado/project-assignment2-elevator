@@ -60,26 +60,38 @@ public class Elevator {
 
     public void move(int totalFloors) {
         // Simulate elevator movement and handle loading/unloading passengers
-        int floorsToMove = Math.min(3, totalFloors); // Limit movement to 5 floors
+        int floorsToMove = Math.min(5, totalFloors); // Limit movement to 5 floors
 
         int targetFloor;
         if (direction == DIRECTION_UP) {
-            targetFloor = currentFloor + floorsToMove;
-            Math.min(currentFloor + floorsToMove, totalFloors);
+            targetFloor = Math.min(currentFloor + floorsToMove, totalFloors);
+            if (currentFloor + floorsToMove >= totalFloors) {
+                // Change direction when reaching the top floor
+                direction = DIRECTION_DOWN;
+            }
         } else if (direction == DIRECTION_DOWN) {
-            targetFloor = currentFloor - floorsToMove;
-            Math.max(currentFloor - floorsToMove, 1);
+            targetFloor = Math.max(currentFloor - floorsToMove, 1);
+            if (currentFloor - floorsToMove <= 1) {
+                // Change direction when reaching the bottom floor
+                direction = DIRECTION_UP;
+            }
         } else {
             // If the direction is none, no movement is needed
             return;
         }
 
+        // Move to each floor with passengers
+        for (int floor = currentFloor + Integer.signum(targetFloor - currentFloor);
+             floor != targetFloor;
+             floor += Integer.signum(targetFloor - currentFloor)) {
+            moveToFloor(floor);
+            floors.loadPassengers(floor, this); // Load passengers from the current floor
+            floors.unloadPassengers(floor, this); // Unload passengers at the destination floor
+        }
+
+        // Move to the final target floor
         moveToFloor(targetFloor);
         floors.loadPassengers(targetFloor, this); // Load passengers from the current floor
         floors.unloadPassengers(targetFloor, this); // Unload passengers at the destination floor
-
-        // Update the elevator's current floor based on the direction
-        currentFloor += direction;
-        direction = DIRECTION_NONE; // Update direction after completing movement and unloading passengers
     }
 }
